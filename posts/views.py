@@ -1,18 +1,48 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
 from .forms import RegistrationForm
-from .models import Post
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q  # <-- Import this
+from .models import Post
 from .forms import PostForm
-from django.shortcuts import get_object_or_404
+
 
 @login_required
 def profile(request):
     user_posts = Post.objects.filter(author=request.user).order_by('-created_at')
     return render(request, 'posts/profile.html', {'posts': user_posts})
+
 def homepage(request):
+    # Get all posts ordered by latest first
     posts = Post.objects.all().order_by('-created_at')
 
+    # Filtering & Search Logic
+    # Date Filter
+    date_filter = request.GET.get('date')
+    if date_filter == 'latest':
+        posts = posts.order_by('-created_at')
+    elif date_filter == 'oldest':
+        posts = posts.order_by('created_at')
+
+    # Media Filter
+    media_filter = request.GET.get('media')
+    if media_filter == 'text':
+        posts = posts.filter(image__isnull=True)
+        print(f"Text Only Posts: {posts.query}")
+    elif media_filter == 'images':
+        posts = posts.filter(image__isnull=False)
+
+    # Author Filter
+    author_filter = request.GET.get('author')
+    if author_filter:
+        posts = posts.filter(author__username=author_filter)
+
+    # Keyword Search
+    keyword = request.GET.get('search')
+    if keyword:
+        posts = posts.filter(Q(content__icontains=keyword) | Q(author__username__icontains=keyword))
+
+    # Post Creation Logic
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -24,7 +54,18 @@ def homepage(request):
     else:
         form = PostForm()
 
-    return render(request, 'posts/homepage.html', {'posts': posts, 'form': form})
+    context = {
+        'posts': posts,
+        'form': form,
+        'date_filter': date_filter,
+        'media_filter': media_filter,
+        'author_filter': author_filter,
+        'keyword': keyword,
+    }
+
+    return render(request, 'posts/homepage.html', context)
+
+
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
