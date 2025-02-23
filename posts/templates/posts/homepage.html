@@ -12,30 +12,6 @@
     <p><a href="{% url 'login' %}">Log in</a> to create a post.</p>
 {% endif %}
 
-<!-- Filtering & Search Form -->
-<form method="get" action="{% url 'homepage' %}">
-    <input type="text" name="search" placeholder="Search posts..." value="{{ keyword }}">
-
-    <select name="date">
-        <option value="">Sort by Date</option>
-        <option value="latest" {% if date_filter == 'latest' %}selected{% endif %}>Latest</option>
-        <option value="oldest" {% if date_filter == 'oldest' %}selected{% endif %}>Oldest</option>
-    </select>
-
-    <select name="media">
-        <option value="">Media Type</option>
-        <option value="text" {% if media_filter == 'text' %}selected{% endif %}>Text Only</option>
-        <option value="images" {% if media_filter == 'images' %}selected{% endif %}>Images Only</option>
-    </select>
-
-    <input type="text" name="author" placeholder="Author username" value="{{ author_filter }}">
-
-    <button type="submit">Filter</button>
-</form>
-
-<hr>
-
-
 {% if posts %}
     {% for post in posts %}
         <div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
