@@ -1,7 +1,3 @@
-Here’s the complete **README.md** for your Django social media application:
-
----
-
 # Django Social Media Application
 
 This is a basic social media web application built with Django. The application allows users to:
