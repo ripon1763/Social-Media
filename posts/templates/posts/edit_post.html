@@ -1,0 +1,15 @@
+<!-- posts/templates/posts/edit_post.html -->
+
+{% extends 'posts/base.html' %}
+
+{% block title %}Edit Post{% endblock %}
+
+{% block content %}
+    <h2>Edit Post</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Changes</button>
+    </form>
+{% endblock %}

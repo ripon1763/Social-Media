@@ -1,0 +1,33 @@
+<h1>Global Feed</h1>
+
+{% if user.is_authenticated %}
+    <h2>Create a New Post</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Post</button>
+    </form>
+    <hr>
+{% else %}
+    <p><a href="{% url 'login' %}">Log in</a> to create a post.</p>
+{% endif %}
+
+{% if posts %}
+    {% for post in posts %}
+        <div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+            <h3>{{ post.author.username }}</h3>
+            <p>{{ post.content }}</p>
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 100%;">
+            {% endif %}
+            <small>Posted on: {{ post.created_at }}</small>
+
+            {% if post.author == user %}
+                <a href="{% url 'edit_post' post.id %}">Edit</a> |
+                <a href="{% url 'delete_post' post.id %}">Delete</a>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No posts yet. Be the first to post something!</p>
+{% endif %}

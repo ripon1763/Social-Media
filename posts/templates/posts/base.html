@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Social Media App{% endblock %}</title>
+    <style>
+        /* Basic Styles for Navbar and Footer */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        nav {
+            background: #333;
+            color: white;
+            padding: 10px;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        footer {
+            background: #f1f1f1;
+            color: #333;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        .content {
+            padding-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<!-- Navbar -->
+<nav>
+    <a href="{% url 'homepage' %}">Home</a>
+    {% if user.is_authenticated %}
+        <a href="{% url 'profile' %}">Profile</a>
+
+        <!-- Logout Form -->
+        <form method="post" action="{% url 'logout' %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" style="background: none; border: none; color: white; text-decoration: none;">Logout</button>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'register' %}">Register</a>
+    {% endif %}
+</nav>
+
+
+<!-- Main Content Area -->
+<div class="content">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Social Media App. All Rights Reserved.</p>
+</footer>
+</body>
+</html>
